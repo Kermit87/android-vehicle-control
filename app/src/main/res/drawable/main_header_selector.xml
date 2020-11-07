@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- disable state. -->
+    <item >
+        <shape>
+            <gradient android:startColor="@color/mainHeaderBackgroundStart"
+                android:centerColor="@color/mainHeaderBackgroundCenter"
+                android:endColor="@color/mainHeaderBackgroundEnd"
+                android:type="linear"
+                android:angle="270"/>
+        </shape>
+    </item>
+</selector>

@@ -1,0 +1,3 @@
+include ':robotikcontrol'
+include ':app'
+rootProject.name = "Robotik Control"
