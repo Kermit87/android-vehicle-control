@@ -19,10 +19,10 @@ class Repository private constructor(private var context: Context): BLEListener,
 
     //private val blueToothDevices: MediatorLiveData<List<BluetoothDevice>> = MediatorLiveData()
     private val receiveMessage: MediatorLiveData<String> = MediatorLiveData()
-    private val connectionState: MediatorLiveData<ConnectionState> = MediatorLiveData()
+    private val connectionState: MediatorLiveData<ConnectionState> = MediatorLiveData() // to observe the connection state
     //private val scanResults: MediatorLiveData<ScanResult> = MediatorLiveData()
     private var btService: BLEService? = null
-    private var tryToConnect = false
+    private var tryToConnect = false // we don't want start a new scanning if the last scanning is still running
 
 
     init {

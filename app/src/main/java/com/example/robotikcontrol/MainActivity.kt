@@ -30,28 +30,28 @@ class MainActivity : AppCompatActivity() ,
     private lateinit var scanButton: Button
     private lateinit var disconnectButton: Button
     private lateinit var statusIcon: ImageView
-    private var currentVehicleMotion: VehicleMotion? = null
+    private var currentVehicleMotion: VehicleMotion? = null // save current movement
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         supportActionBar?.hide()
-
+        // init ui-elements
         scanButton = findViewById(R.id.connectButton)
         disconnectButton = findViewById(R.id.disconnectButton)
         statusIcon = findViewById(R.id.statusIcon)
         scanButton.setOnClickListener(this)
         disconnectButton.setOnClickListener(this)
-
+        // for observing an connection state change
         viewModel.getConnectionState().observe(this,connectionObserver)
         currentVehicleMotion = VehicleMotion(Orientation.RELEASE,Direction.UNKNOWN,0)
         showControl()
         //setDeviceBluetoothDiscoverable()
-        allowLocationDetectionPermissions()
+        allowLocationDetectionPermissions() // is needed to be sure ble is active
         viewModel.scanService()
     }
-
+    // is called if a result is returned from another activity
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() ,
         }
     }
 
-    private fun setDeviceBluetoothDiscoverable() {
+    /*private fun setDeviceBluetoothDiscoverable() {
         //no need to request bluetooth permission if  discoverability is requested
         val discoverableIntent = Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE)
         discoverableIntent.putExtra(
@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity() ,
             0
         )// 0 to keep it always discoverable
         startActivity(discoverableIntent)
-    }
+    }*/
 
     /*fun showSettings(){
         supportFragmentManager.beginTransaction().addToBackStack(null).
@@ -100,7 +100,6 @@ class MainActivity : AppCompatActivity() ,
           //  vehicleMotion.direction,vehicleMotion.speed)
         val commandString = createVehicleMotionString(vehicleMotion.orientation,
             vehicleMotion.direction,vehicleMotion.speed)
-        // TODO nur zu testzwecken
         //val str = json.toString().length.toString()
         //viewModel.writeStringCharacter(str)
 

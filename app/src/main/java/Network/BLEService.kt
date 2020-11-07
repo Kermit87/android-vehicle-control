@@ -17,9 +17,9 @@ import java.util.*
 
 class BLEService(val context: Context): Service() {
 
-    private val uuidService = ParcelUuid.fromString("19B10000-E8F2-537E-4F6C-D104768A1214")
-    private val uuidControl = UUID.fromString("19B10001-E8F2-537E-4F6C-D104768A1214")
-    private val uuidStateNotify = UUID.fromString("19B10012-E8F2-537E-4F6C-D104768A1214")
+    private val uuidService = ParcelUuid.fromString("19B10000-E8F2-537E-4F6C-D104768A1214") // UUID for the service
+    private val uuidControl = UUID.fromString("19B10001-E8F2-537E-4F6C-D104768A1214") // UUID for control characteristic
+    private val uuidStateNotify = UUID.fromString("19B10012-E8F2-537E-4F6C-D104768A1214") // UUID for notify changes characteristic
     private val cccDescriptorUuid = UUID.fromString("00002902-0000-1000-8000-00805F9B34FB")
 
     private var bluetoothGatt: BluetoothGatt? = null
@@ -43,16 +43,17 @@ class BLEService(val context: Context): Service() {
     init {
         binder = BLEBinder()
     }
-
+    // to set the instance which will be notify
     fun attach(listener: BLEListener){
         this.listener = listener
     }
 
     fun scanLeDevice(enable: Boolean) {
+        // init the filter so that only searching for our service
         val filterList = ArrayList<ScanFilter>()
         val filter = ScanFilter.Builder().setServiceUuid(uuidService).build()
         filterList.add(filter)
-
+        // set the type of scan-mode
         val scanSettings = ScanSettings.Builder()
             .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
             .build()
@@ -97,7 +98,7 @@ class BLEService(val context: Context): Service() {
     fun discoverServices(gatt: BluetoothGatt?){
         gatt?.discoverServices()
     }
-
+    // send the data to control the vehicle
     fun writeStringCharacterToBLEService(msg: String){
         val characteristic =  bluetoothGatt?.findCharacteristic(uuidControl)
         if (characteristic == null){
@@ -213,13 +214,13 @@ class BLEService(val context: Context): Service() {
             }
         }
     }
-    // Methods for writing, read and sub/un-sub to notify character-changes
+    // Methods for writing, reading and sub/un-sub to notify character-changes
     fun connectToBleDevice(result: ScanResult): BluetoothGatt{
         return result.device.connectGatt(this, false, gattCallback)
     }
 
     private fun writeCharacteristic(characteristic: BluetoothGattCharacteristic, payload: ByteArray) {
-        val writeType = when {
+        val writeType = when { // check necessary capability's of the characteristic
             characteristic.isWritable() -> BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
             characteristic.isWritableWithoutResponse() -> {
                 BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE

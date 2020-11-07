@@ -49,7 +49,7 @@ fun createContainerMotionString(containerM: ContainerMotion): String{
     return "RS$con$speed"
 
 }
-
+// calculate from the touch position the defined speed
 fun MainActivity.getPredefinedSpeed(motionEvent: MotionEvent?): Int {
     val y = motionEvent?.y?.toInt() ?: return 0
 
@@ -67,7 +67,7 @@ fun MainActivity.getPredefinedSpeed(motionEvent: MotionEvent?): Int {
     }
     return 0
 }
-
+// calculate from the touch position the vehicle orientation
 fun MainActivity.getPredefinedOrientation(motionEvent: MotionEvent?): Orientation{
     val y = motionEvent?.y?.toInt() ?: return Orientation.RELEASE
 
