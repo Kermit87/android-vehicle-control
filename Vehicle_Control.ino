@@ -24,7 +24,7 @@ typedef struct{
 BLEService vehicleService("19B10000-E8F2-537E-4F6C-D104768A1214"); // BLE LED Service
 
 // BLE LED Switch Characteristic - custom 128-bit UUID, read and writable by central
-BLEStringCharacteristic vehicleMotionCharacteristic("19B10001-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite, 6);
+BLEStringCharacteristic vehicleMotionCharacteristic("19B10001-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite, 5);
 BLEByteCharacteristic vehicleMotionStatusCharacteristic("19B10012-E8F2-537E-4F6C-D104768A1214", BLERead | BLENotify);
 // init motors 
 Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
@@ -130,9 +130,9 @@ boolean processStringCommand(char command[]){
   }
 
   char buffer[4];
-  buffer[0] = command[3];
-  buffer[1] = command[4];
-  buffer[2] = command[5];
+  buffer[0] = command[2];
+  buffer[1] = command[3];
+  buffer[2] = command[4];
   buffer[3] = '\0';
 
   int  speed_;
