@@ -3,14 +3,11 @@ package com.example.robotikcontrol
 import Data.VehicleMotion
 import Data.ViewModel
 import Enums.ConnectionState
-import Enums.ContainerMotion
 import Enums.Direction
+import Enums.MoveMode
 import Enums.Orientation
 import Screens.ControlFragment
-import OldClasses.SettingsFragment
 import android.Manifest
-import android.bluetooth.BluetoothAdapter
-import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -106,11 +103,6 @@ class MainActivity : AppCompatActivity() ,
         viewModel.writeStringCharacter(commandString)
     }
 
-    private fun sendContainerMotionToBTD(motion: ContainerMotion){
-        val commandString = createContainerMotionString(motion)
-        viewModel.writeStringCharacter(commandString)
-    }
-
     override fun onClick(v: View?) {
         //showSettings()
         when(v?.id){
@@ -129,6 +121,7 @@ class MainActivity : AppCompatActivity() ,
             currentVehicleMotion?.speed = definedSpeed
             currentVehicleMotion?.orientation = definedOrientation
             currentVehicleMotion?.let { vehicleMotion ->
+                viewModel.setMoveMode(calculateMoveMode(definedOrientation, definedSpeed))
                 sendVehicleMotionOrderToBTD(vehicleMotion)
             }
         }
@@ -142,6 +135,7 @@ class MainActivity : AppCompatActivity() ,
             currentVehicleMotion?.speed = definedSpeed
             currentVehicleMotion?.orientation = definedOrientation
             currentVehicleMotion?.let { vehicleMotion ->
+                viewModel.setMoveMode(calculateMoveMode(definedOrientation, definedSpeed))
                 sendVehicleMotionOrderToBTD(vehicleMotion)
             }
         }
@@ -151,6 +145,7 @@ class MainActivity : AppCompatActivity() ,
         currentVehicleMotion?.speed = 0
         currentVehicleMotion?.orientation = Orientation.RELEASE
         currentVehicleMotion?.let { vehicleMotion ->
+            viewModel.setMoveMode(MoveMode.Stop)
             sendVehicleMotionOrderToBTD(vehicleMotion)
         }
     }
@@ -176,19 +171,6 @@ class MainActivity : AppCompatActivity() ,
         }
     }
 
-    override fun containerControlButtonPressed(id: Int) {
-        val containerMotion = when(id){
-            R.id.topButton -> ContainerMotion.UP
-            R.id.downButton -> ContainerMotion.DOWN
-            else -> ContainerMotion.STOP
-        }
-        sendContainerMotionToBTD(containerMotion)
-    }
-
-    override fun containerControlButtonRelease(id: Int) {
-        sendContainerMotionToBTD(ContainerMotion.STOP)
-    }
-
     // Observer to update the UI
     private val connectionObserver = Observer<ConnectionState> { state ->
         if (state == ConnectionState.Connected){
@@ -203,3 +185,14 @@ class MainActivity : AppCompatActivity() ,
         private const val FINE_LOCATION_PERMISSION_REQUEST= 1001
     }
 }
+
+
+
+/*override fun containerControlButtonPressed(id: Int) {
+    val containerMotion = when(id){
+        R.id.topButton -> ContainerMotion.UP
+        R.id.downButton -> ContainerMotion.DOWN
+        else -> ContainerMotion.STOP
+    }
+    sendContainerMotionToBTD(containerMotion)
+}*/

@@ -17,7 +17,7 @@
             android:layout_height="40dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
-            android:background="@drawable/ic_bluetooth1" />
+            android:background="@drawable/connect_button_selector" />
 
         <Button
             android:id="@+id/disconnectButton"
@@ -26,7 +26,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="30dp"
             android:layout_toRightOf="@id/connectButton"
-            android:background="@drawable/ic_disconnect"/>
+            android:background="@drawable/disconnect_button_selector"/>
 
         <TextView
             android:id="@+id/headerView"

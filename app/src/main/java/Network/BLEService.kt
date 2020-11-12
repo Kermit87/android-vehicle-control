@@ -144,6 +144,7 @@ class BLEService(val context: Context): Service() {
                     listener?.disconnected()
                 }
             } else {
+                listener?.disconnected()
                 Log.w(
                     "BluetoothGattCallback",
                     "Error $status encountered for $deviceAddress! Disconnecting..."

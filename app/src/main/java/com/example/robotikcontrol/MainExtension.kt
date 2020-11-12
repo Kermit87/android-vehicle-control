@@ -1,7 +1,7 @@
 package com.example.robotikcontrol
 
-import Enums.ContainerMotion
 import Enums.Direction
+import Enums.MoveMode
 import Enums.Orientation
 import android.view.MotionEvent
 import org.json.JSONObject
@@ -19,10 +19,25 @@ fun createVehicleMotionJson(orientation: Orientation, direction: Direction, spee
     return vehicleMotion
 }
 
+fun calculateMoveMode(orientation: Orientation, speed: Int): MoveMode {
+    if (orientation == Orientation.BACKWARD && speed == 200){
+        return MoveMode.BackwardSpeed2
+    }
+    if (orientation == Orientation.BACKWARD && speed == 100){
+        return MoveMode.BackwardSpeed1
+    }
+    if (orientation == Orientation.FORWARD && speed == 200){
+        return MoveMode.ForwardSpeed2
+    }
+    if (orientation == Orientation.FORWARD && speed == 100){
+        return MoveMode.ForwardSpeed1
+    }
+    return MoveMode.Stop
+}
+
 fun createVehicleMotionString(orientation: Orientation, direction: Direction, speed: Int): String {
     var or = ""
     var dir = ""
-    val con = "S" // Always the vehicle drive, the container should stop
 
     or = when(orientation){
         Orientation.FORWARD -> "F"
@@ -36,19 +51,9 @@ fun createVehicleMotionString(orientation: Orientation, direction: Direction, sp
         Direction.RIGHT -> "R"
         Direction.UNKNOWN -> "S"
     }
-   return "$or$dir$con$speed"
+   return "$or$dir$speed"
 }
 
-fun createContainerMotionString(containerM: ContainerMotion): String{
-    val speed = 0
-    val con = when(containerM){
-        ContainerMotion.DOWN -> "D"
-        ContainerMotion.UP -> "U"
-        ContainerMotion.STOP -> "S"
-    }
-    return "RS$con$speed"
-
-}
 // calculate from the touch position the defined speed
 fun MainActivity.getPredefinedSpeed(motionEvent: MotionEvent?): Int {
     val y = motionEvent?.y?.toInt() ?: return 0

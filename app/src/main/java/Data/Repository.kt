@@ -1,6 +1,7 @@
 package Data
 
 import Enums.ConnectionState
+import Enums.MoveMode
 import Network.*
 import OldClasses.SerialService
 import android.bluetooth.*
@@ -20,6 +21,7 @@ class Repository private constructor(private var context: Context): BLEListener,
     //private val blueToothDevices: MediatorLiveData<List<BluetoothDevice>> = MediatorLiveData()
     private val receiveMessage: MediatorLiveData<String> = MediatorLiveData()
     private val connectionState: MediatorLiveData<ConnectionState> = MediatorLiveData() // to observe the connection state
+    private val moveMode: MediatorLiveData<MoveMode> = MediatorLiveData()
     //private val scanResults: MediatorLiveData<ScanResult> = MediatorLiveData()
     private var btService: BLEService? = null
     private var tryToConnect = false // we don't want start a new scanning if the last scanning is still running
@@ -28,6 +30,7 @@ class Repository private constructor(private var context: Context): BLEListener,
     init {
         //blueToothDevices.postValue(pairedDevices())
         connectionState.postValue(ConnectionState.Disconnected)
+        moveMode.postValue(MoveMode.Stop)
 
         Intent(context, SerialService::class.java).also { intent ->
             if (btService == null) {
@@ -49,6 +52,14 @@ class Repository private constructor(private var context: Context): BLEListener,
 
     fun connectionState(): LiveData<ConnectionState>{
         return connectionState
+    }
+
+    fun currentMoveMode(): LiveData<MoveMode>{
+        return moveMode
+    }
+
+    fun setMoveMode(mode: MoveMode){
+        moveMode.postValue(mode)
     }
 
     /*fun pairedDevices(): ArrayList<BluetoothDevice>?{

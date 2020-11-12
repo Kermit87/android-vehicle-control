@@ -1,10 +1,13 @@
 package Data
 
 import Enums.ConnectionState
+import Enums.MoveMode
 import android.app.Application
 import android.bluetooth.BluetoothDevice
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 
 class ViewModel(application: Application): AndroidViewModel(application) {
 
@@ -12,17 +15,15 @@ class ViewModel(application: Application): AndroidViewModel(application) {
     //private val blueToothDevices: LiveData<List<BluetoothDevice>>
     private val connectionState: LiveData<ConnectionState>
     private val receiveMessage: LiveData<String>
+    private val moveMode: LiveData<MoveMode>
 
     init {
 
         //blueToothDevices = repository.getBlueToothDevices()
         connectionState = repository.connectionState()
         receiveMessage = repository.getReceiveMessages()
+        moveMode = repository.currentMoveMode()
     }
-
-    /*fun getBlueToothDevices(): LiveData<List<BluetoothDevice>>{
-        return blueToothDevices
-    }*/
 
     fun getConnectionState(): LiveData<ConnectionState>{
         return connectionState
@@ -32,17 +33,17 @@ class ViewModel(application: Application): AndroidViewModel(application) {
         return receiveMessage
     }
 
+    fun currentMoveMode(): LiveData<MoveMode> {
+        return moveMode
+    }
+
+    fun setMoveMode(mode: MoveMode){
+        repository.setMoveMode(mode)
+    }
+
     fun disconnectToGatt(){
         repository.disconnectToGatt()
     }
-
-    /*fun connectToBTDevice(address: String){
-        repository.connectToBTDevice(address)
-    }
-
-    fun writeToBTDevice(msg: String){
-        repository.writeToBTDevice(msg)
-    }*/
 
     fun scanService(){
         repository.scanService()
