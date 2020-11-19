@@ -48,7 +48,7 @@ class BLEService(val context: Context): Service() {
         this.listener = listener
     }
 
-    fun scanLeDevice(enable: Boolean) {
+    fun scanLeDevice() {
         // init the filter so that only searching for our service
         val filterList = ArrayList<ScanFilter>()
         val filter = ScanFilter.Builder().setServiceUuid(uuidService).build()
@@ -58,25 +58,22 @@ class BLEService(val context: Context): Service() {
             .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
             .build()
 
-        when (enable) {
-            true -> {
-                // Stops scanning after a pre-defined scan period.
-                Handler().postDelayed({
-                    mScanning = false
+        if (!mScanning) {
+            // Stops scanning after a pre-defined scan period.
+            Handler().postDelayed({
+                if (mScanning){
+                    listener?.scanTimeout()
                     stopBLEScan()
-                }, 5000)
-                mScanning = true
-                startBLEScan(filterList, scanSettings)
+                }
+            }, 7000)
+            mScanning = true
+            startBLEScan(filterList, scanSettings)
             }
-            else -> {
-                mScanning = false
-                stopBLEScan()
-            }
-        }
     }
 
     private fun stopBLEScan(){
         bluetoothAdapter?.bluetoothLeScanner?.stopScan(mLeScanCallback)
+        mScanning = false
     }
 
     private fun startBLEScan(filterList: ArrayList<ScanFilter>, scanSettings: ScanSettings){
@@ -135,6 +132,7 @@ class BLEService(val context: Context): Service() {
                 if (newState == BluetoothProfile.STATE_CONNECTED) {
                     Log.w("BluetoothGattCallback", "Successfully connected to $deviceAddress")
                     bluetoothGatt = gatt
+                    stopBLEScan()
                     listener?.connected(gatt)
                     //gatt.discoverServices()
 

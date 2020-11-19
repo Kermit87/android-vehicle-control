@@ -8,45 +8,27 @@
     <RelativeLayout
         android:id="@+id/titleBar"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="45dp"
         android:background="@drawable/main_header_selector">
-
-        <Button
-            android:id="@+id/connectButton"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:background="@drawable/connect_button_selector" />
-
-        <Button
-            android:id="@+id/disconnectButton"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="30dp"
-            android:layout_toRightOf="@id/connectButton"
-            android:background="@drawable/disconnect_button_selector"/>
 
         <TextView
             android:id="@+id/headerView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Header"
-            android:textStyle="bold"
+            android:text="@string/header_control_area"
             android:textColor="@color/black"
             android:textSize="18dp"
-            />
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/statusIcon"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginRight="20dp"
-            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:background="@drawable/green_round_bg"/>
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/ic_connected_icon" />
 
 
     </RelativeLayout>

@@ -62,42 +62,9 @@ class Repository private constructor(private var context: Context): BLEListener,
         moveMode.postValue(mode)
     }
 
-    /*fun pairedDevices(): ArrayList<BluetoothDevice>?{
-        val btAdapter = BluetoothAdapter.getDefaultAdapter() ?: return null
-        if(!btAdapter.isEnabled){return null}
-
-        val list = ArrayList<BluetoothDevice>()
-        btAdapter.bondedDevices.forEach{ device ->
-            list.add(device)
-        }
-        return list
-    }*/
-
-    /*fun connectToBTDevice(address: String){
-        try {
-            val device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address)
-            connectionState.postValue(ConnectionState.Pending)
-            btService?.connect(SerialSocket(context.applicationContext, device))
-        }catch (e: Exception){
-            onSerialConnectError(e)
-        }
-    }
-
-    fun writeToBTDevice(msg: String){
-        if (connectionState.value != ConnectionState.Connected){
-            Toast.makeText(context, "not connected", Toast.LENGTH_SHORT).show()
-            return
-        }
-        try {
-            val bytes = msg.toByteArray()
-            btService?.write(bytes)
-        } catch (e: java.lang.Exception){
-            onSerialIoError(e)
-        }
-    }*/
-
     fun scanService(){
-        btService?.scanLeDevice(true)
+        connectionState.postValue(ConnectionState.Pending)
+        btService?.scanLeDevice()
     }
 
     fun disconnectToGatt(){
@@ -118,26 +85,6 @@ class Repository private constructor(private var context: Context): BLEListener,
 
     }
 
-    /*
-    override fun onSerialConnect() {
-        connectionState.postValue(ConnectionState.Connected)
-    }
-
-    override fun onSerialConnectError(e: Exception?) {
-        connectionState.postValue(ConnectionState.Disconnected)
-    }
-
-    override fun onSerialRead(data: ByteArray?) {
-        val msg = if (data != null){
-            String(data)
-        }else{ "error" }
-        receiveMessage.postValue(msg)
-    }
-
-    override fun onSerialIoError(e: Exception?) {
-
-    }
-     */
     override fun connected(gatt: BluetoothGatt?) {
         connectionState.postValue(ConnectionState.Connected)
         tryToConnect = false
@@ -149,31 +96,26 @@ class Repository private constructor(private var context: Context): BLEListener,
         tryToConnect = false
     }
 
+    override fun scanTimeout() {
+        connectionState.postValue(ConnectionState.Disconnected)
+    }
+
     override fun writeCharacteristicSuccessfully() {
         Log.e("CharacteristicWritten", "characteristic successfully written with")
     }
 
     override fun scanResult(callbackType: Int, result: ScanResult?) {
-        //val uuids = result?.device?.uuids
-        //uuids?.first { it.uuid == UUID.fromString("19B10000-E8F2-537E-4F6C-D104768A1214") } ?: return
-        val name = result?.device?.name
-        val uuids = result?.device?.uuids
-
         if (result == null){
             return
         }
-        if (name == "LED"){
-            Log.e("RepositoryScanResult", "Device with service found")
-            Log.e("RepositoryScanResult", "Name: $name")
-        }
-        if (connectionState?.value == ConnectionState.Disconnected && !tryToConnect) {
+        if ((connectionState.value == ConnectionState.Disconnected ||
+                    connectionState.value == ConnectionState.Pending) && !tryToConnect) {
             btService?.connectToGatt(result)
             tryToConnect = true
         }
     }
 
     override fun serviceDiscoveredResult(gatt: BluetoothGatt?, status: Int) {
-
     }
 
     override fun characteristicChanged(
@@ -194,3 +136,59 @@ class Repository private constructor(private var context: Context): BLEListener,
             }
     }
 }
+
+
+/*
+override fun onSerialConnect() {
+    connectionState.postValue(ConnectionState.Connected)
+}
+
+override fun onSerialConnectError(e: Exception?) {
+    connectionState.postValue(ConnectionState.Disconnected)
+}
+
+override fun onSerialRead(data: ByteArray?) {
+    val msg = if (data != null){
+        String(data)
+    }else{ "error" }
+    receiveMessage.postValue(msg)
+}
+
+override fun onSerialIoError(e: Exception?) {
+
+}
+ */
+
+/*fun pairedDevices(): ArrayList<BluetoothDevice>?{
+    val btAdapter = BluetoothAdapter.getDefaultAdapter() ?: return null
+    if(!btAdapter.isEnabled){return null}
+
+    val list = ArrayList<BluetoothDevice>()
+    btAdapter.bondedDevices.forEach{ device ->
+        list.add(device)
+    }
+    return list
+}*/
+
+/*fun connectToBTDevice(address: String){
+    try {
+        val device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address)
+        connectionState.postValue(ConnectionState.Pending)
+        btService?.connect(SerialSocket(context.applicationContext, device))
+    }catch (e: Exception){
+        onSerialConnectError(e)
+    }
+}
+
+fun writeToBTDevice(msg: String){
+    if (connectionState.value != ConnectionState.Connected){
+        Toast.makeText(context, "not connected", Toast.LENGTH_SHORT).show()
+        return
+    }
+    try {
+        val bytes = msg.toByteArray()
+        btService?.write(bytes)
+    } catch (e: java.lang.Exception){
+        onSerialIoError(e)
+    }
+}*/

@@ -15,4 +15,5 @@ interface BLEListener {
         gatt: BluetoothGatt?,
         characteristic: BluetoothGattCharacteristic?
     )
+    fun scanTimeout()
 }
