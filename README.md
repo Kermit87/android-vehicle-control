@@ -1,1 +1,1 @@
-Android App for data exchange with Arduino WiFi rev 2 via BLE for controlling the vehicle mentioned in the description
+BLE Android App Example to communicate with Arduino (WiFi Rev 2). In ths case to control a self build vehicle with dc-motors. 
