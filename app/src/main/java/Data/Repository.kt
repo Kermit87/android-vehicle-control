@@ -35,7 +35,7 @@ class Repository private constructor(private var context: Context): BLEListener,
         Intent(context, SerialService::class.java).also { intent ->
             if (btService == null) {
                 context.startService(intent)
-                btService = BLEService(context).apply { attach(this@Repository) }
+                btService = BLEService().apply { attach(context,this@Repository) }
             }
             context.bindService(intent, this, Context.BIND_AUTO_CREATE)
         }
@@ -78,7 +78,7 @@ class Repository private constructor(private var context: Context): BLEListener,
     override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
         //btService = (service as SerialService.SerialBinder).service
         btService = (service as BLEService.BLEBinder).getService()
-        btService?.attach(this)
+        btService?.attach(context,this)
     }
 
     override fun onServiceDisconnected(name: ComponentName?) {

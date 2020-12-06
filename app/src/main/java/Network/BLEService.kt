@@ -15,7 +15,7 @@ import android.os.ParcelUuid
 import android.util.Log
 import java.util.*
 
-class BLEService(val context: Context): Service() {
+class BLEService(): Service() {
 
     private val uuidService = ParcelUuid.fromString("19B10000-E8F2-537E-4F6C-D104768A1214") // UUID for the service
     private val uuidControl = UUID.fromString("19B10001-E8F2-537E-4F6C-D104768A1214") // UUID for control characteristic
@@ -27,10 +27,11 @@ class BLEService(val context: Context): Service() {
     private var mScanning: Boolean = false
     private var binder: IBinder? = null
 
-    private val bluetoothAdapter: BluetoothAdapter by lazy(LazyThreadSafetyMode.NONE) {
+    /*private val bluetoothAdapter: BluetoothAdapter by lazy(LazyThreadSafetyMode.NONE) {
         val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         bluetoothManager.adapter
-    }
+    }*/
+    private var bluetoothAdapter: BluetoothAdapter? = null
 
     inner class BLEBinder : Binder() {
         fun getService(): BLEService = this@BLEService
@@ -44,8 +45,10 @@ class BLEService(val context: Context): Service() {
         binder = BLEBinder()
     }
     // to set the instance which will be notify
-    fun attach(listener: BLEListener){
+    fun attach(context: Context, listener: BLEListener){
         this.listener = listener
+        val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        bluetoothAdapter = bluetoothManager.adapter
     }
 
     fun scanLeDevice() {
