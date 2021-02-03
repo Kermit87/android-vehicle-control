@@ -1,4 +1,4 @@
-BLE Android App Example to communicate with Arduino (WiFi Rev 2). In ths case to control a self build vehicle with dc-motors. 
+BLE Android APP Example to communicate with Arduino (WiFi Rev 2)for controlling a self build vehicle with dc-motors. 
 
 ## used components 
 
